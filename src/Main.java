@@ -72,7 +72,7 @@ public class Main {
            strecke = richtung*(-1);
            pRichtung= richtung-2;
         }
-//Testj
+//Testja
         int i = q;
         if (q==i /*erster Durchlauf*/ && q==bound /*erster oder letzer, querer Wagen*/ && (w+2>=normalB || w-1 < 0)/*ob auch am Rand steht*/){ //Fall: Rand
             if (w == normalB-2){
