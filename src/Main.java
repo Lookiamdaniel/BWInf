@@ -22,13 +22,12 @@ public class Main {
                 }
             }
             System.out.println("");
-            letsScan();
         }
 
     }
     public static void letsScan() throws FileNotFoundException {
         int nQuer;
-        File file = new File("D:\\Daniel\\IntelliJ\\BwInf\\src\\parkplatz4.txt");
+        File file = new File("D:\\Daniel\\IntelliJ\\BwInf\\src\\parkplatz0.txt");
         Scanner scan = new Scanner(file);
 
         String x = scan.nextLine();
@@ -61,91 +60,63 @@ public class Main {
     }
     public static void verschieben(int q, int richtung){
         int bound = quer.length-1;
-        int richtungPlus = 1;
-        int pRichtung = 1;
-        int strecke = richtung;
-        String rl = " rechts";
-
-        if (richtung < 0){
-           bound = 0;
-           richtungPlus = -1;
-           pRichtung= richtung-2;
-           strecke = richtung*(-1);
-           rl = " links";
-        }
-
-        int i = q;
-        if (q==i /*erster Durchlauf*/ && q==bound /*erster oder letzer, querer Wagen*/ && (quer[q]+2>=normalB || quer[q]-1 < 0)/*ob auch am Rand steht*/){ //Fall: Rand
-            if ((richtung > 0 && bound != 0) || (richtung < 0 && bound == 0)){
-                verschieben(q, richtung*(-2)); //das herausfahrende Auto befindet sich am zweiten oder vorletzten Platz
-            } else {
-                verschieben(q, richtung*(-1));
-            }
-            return;
-        }
-        if (richtung > 0 && (i+1)<quer.length){
-            i++;
-        } else if (richtung < 0 && (i-1)>=0){
-            i--;
-        }
-        if (quer[i] != quer[q]+pRichtung+1) { //Fall: links oder rechts frei
-            System.out.println(toChar(normalB + 1 + q) + " "+ strecke + rl);
-            quer[q] = quer[q]+richtung;
-
-        } else { //Fall: nicht frei
-            verschieben(i, richtungPlus);
-            verschieben(q, richtung);
-
-        }
-
-    }
-
-
-    public static void yverschieben(int q, int richtung){
-        int bound = quer.length-1;
-        int richtungPlus = 1;
-        int pRichtung = 1;
-        int strecke = richtung;
-        String rl = " rechts";
 
         if (richtung < 0){
             bound = 0;
-            richtungPlus = -1;
-            rl = " links";
-            strecke = richtung*(-1);
-            pRichtung= richtung-2;
         }
 
-        if (q==bound /*erster oder letzer, querer Wagen*/ && (quer[q]+2>=normalB || quer[q]-1 < 0)/*ob auch am Rand steht*/){ //Fall: Rand
-            if ((richtung > 0 && bound != 0) || (richtung < 0 && bound == 0)){
-                yverschieben(q, richtung*(-2)); //das herausfahrende Auto befindet sich am zweiten oder vorletzten Platz
-            } else {
-                yverschieben(q,richtung*(-1));
+        int plus [] = new int[quer.length];
+        for (int i = q; i <= bound; i++){
+            try {
+                plus[i-q] = (quer[i + 1] - (quer[i] + 2));
+            } catch (ArrayIndexOutOfBoundsException exception){
+                plus[i-q] = normalB - (quer[i] + 2);
             }
         }
 
-        ArrayList<Integer> plus = new ArrayList<Integer>();
-        for (int i = q; i <= bound; i++){
-            plus.add(quer[i+1]-quer[i]+2);
-        }
-
-        ArrayList<Integer> minus = new ArrayList<Integer>();
+        int minus [] = new int [quer.length];
         for (int i = q; i >= 0; i--){
-            minus.add(quer[i]-quer[i-1]+2);
+            try {
+                minus[q-i]= quer[i] - (quer[i-1]+2);
+            } catch (ArrayIndexOutOfBoundsException exception){
+                minus[q-i]= quer[i];
+            }
         }
 
-        for (int i = 0; i <= quer.length; i++){
+        int p = 0;
+        int m = 0;
+        for (int i = 0; i <= quer.length-1; i++) {
+            p = plus[i]+p;
+            m = minus[i]+m;
 
-        }
+            if (richtung>0){
+                if (p>0){
+                    for (int j = i; j>=0; j--){
+                        System.out.println(toChar(normalB + 1 + q + j) + " 1 rechts");
+                    }
+                    break;
+                } else if (m>=2){
+                    for (int j = i; j>=1; j--){
+                        System.out.println(toChar(normalB + 1 + q - j) + " 1 links");
+                    }
+                    System.out.println(toChar(normalB + 1 + q) + " 2 links");
+                    break;
+                }
+            } else if (richtung<0){
+                if (m>0){
+                    for (int j = i; j>=0; j--){
+                        System.out.println(toChar(normalB + 1 + q - j) + " 1 links");
+                    }
+                    break;
+                } else if (p>=2){
+                    for (int j = i; j>=1; j--){
+                        System.out.println(toChar(normalB + 1 + q - j) + " 1 rechts");
+                    }
+                    System.out.println(toChar(normalB + 1 + q) + " 2 rechts");
+                    break;
+                }
+            }
 
-        if (quer[q+richtung] != quer[q]+pRichtung+1) { //Fall: links oder rechts frei
-            System.out.println(toChar(normalB + 1 + q) + " "+ strecke + rl);
-            quer[q] = quer[q]+richtung;
-        }
-
-        else if (quer[q+richtung] == quer[q]+pRichtung+1) { //Fall: nicht frei
-            yverschieben(q, richtungPlus);
-            yverschieben(q, richtung);
         }
     }
 }
